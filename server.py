@@ -17,22 +17,23 @@ def home():
 
 @app.route('/add-client', methods=['POST'])
 def add_client():
-    """
-    Маршрут для добавления клиента в файл database.txt
-    """
     data = request.json
-    name = data.get('name')
-
+    name = data.get('name', '').strip()
     if not name:
-        return jsonify({'success': False, 'error': 'Имя клиента обязательно'}), 400
+        return jsonify({'error': 'Name is required'}), 400
+    with open('database.txt', 'a') as f:
+        f.write(f"{name}|Тип A|Категория 1\n")
+    return jsonify({'message': 'Client added successfully'}), 200
 
+@app.route('/view-database', methods=['GET'])
+def view_database():
     try:
-        # Добавляем запись в файл
-        with open(DATABASE_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"{name}|Тип A|Категория 1\n")
-        return jsonify({'success': True, 'message': 'Клиент успешно добавлен!'})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        with open('database.txt', 'r') as f:
+            data = f.read()
+        return data, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+    except FileNotFoundError:
+        return jsonify({'error': 'Database file not found'}), 404
+
 
 @app.route('/view-database', methods=['GET'])
 def view_database():
