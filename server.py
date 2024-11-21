@@ -12,8 +12,8 @@ if not os.path.exists(DATABASE_FILE):
         f.write('')  # Создаем пустой файл
 
 @app.route('/')
-def home():
-    return "Сервер работает! Вы можете использовать маршруты /add-client и /view-database."
+def serve_index():
+    return send_from_directory('.', 'index.html')  # Отправляет index.html из текущей директории
 
 @app.route('/add-client', methods=['POST'])
 def add_client():
