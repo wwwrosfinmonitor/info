@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        input, button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Админ-панель</h1>
+    <form id="adminForm">
+        <label for="clientName">Имя клиента</label>
+        <input type="text" id="clientName" placeholder="Введите имя клиента" required>
+        <button type="submit">Добавить клиента</button>
+    </form>
+    <div id="status"></div>
+
+    <script>
+        document.getElementById('adminForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const clientName = document.getElementById('clientName').value.trim();
+            const clientType = "Физическое лицо"; // Новое статическое значение для типа
+            const clientCategory = "Национальный"; // Новое статическое значение для категории
+
+            if (!clientName) {
+                alert('Имя клиента не может быть пустым');
+                return;
+            }
+
+            try {
+                const response = await fetch('/add-client', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: clientName, type: clientType, category: clientCategory }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('status').innerText = 'Клиент успешно добавлен!';
+                } else {
+                    document.getElementById('status').innerText = 'Ошибка при добавлении клиента!';
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('status').innerText = 'Ошибка при отправке данных.';
+            }
+
+            document.getElementById('clientName').value = ''; // Очистить поле ввода
+        });
+    </script>
+</body>
+</html>
