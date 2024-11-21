@@ -41,40 +41,39 @@
 
     <script>
         document.getElementById('adminForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+    event.preventDefault();
 
-            const clientName = document.getElementById('clientName').value.trim();
-            const clientType = "Физическое лицо"; // Новое статическое значение для типа
-            const clientCategory = "Национальный"; // Новое статическое значение для категории
+    const clientName = document.getElementById('clientName').value.trim();
 
-            if (!clientName) {
-                alert('Имя клиента не может быть пустым');
-                return;
-            }
+    if (!clientName) {
+        alert('Имя клиента не может быть пустым');
+        return;
+    }
 
-            try {
-                const response = await fetch('/add-client', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name: clientName, type: clientType, category: clientCategory }),
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    document.getElementById('status').innerText = 'Клиент успешно добавлен!';
-                } else {
-                    document.getElementById('status').innerText = 'Ошибка при добавлении клиента!';
-                }
-            } catch (error) {
-                console.error('Ошибка:', error);
-                document.getElementById('status').innerText = 'Ошибка при отправке данных.';
-            }
-
-            document.getElementById('clientName').value = ''; // Очистить поле ввода
+    try {
+        const response = await fetch('/add-client', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: clientName }),
         });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Клиент успешно добавлен!');
+        } else {
+            alert('Ошибка при добавлении клиента!');
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        alert('Ошибка при отправке данных.');
+    }
+
+    document.getElementById('clientName').value = '';
+});
+
     </script>
 </body>
 </html>
